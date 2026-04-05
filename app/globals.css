@@ -24,3 +24,24 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/*
+ * iOS Safari: ダブルタップズームを防止する
+ * トレーニング中の誤操作防止のためすべてのインタラクティブ要素に適用
+ */
+button,
+a,
+select,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+/*
+ * iOS Safari: 入力フィールドのズームを防止する（font-size 16px 以上が必要）
+ * Tailwind の text-base (16px) を使っているが、念のためグローバルに保証する
+ */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
