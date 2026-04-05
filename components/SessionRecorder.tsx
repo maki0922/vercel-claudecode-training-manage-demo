@@ -193,7 +193,7 @@ function ExerciseSection({
   }
 
   function handleDeleteSet(index: number) {
-    return (savedId: string | null) => {
+    return (_savedId: string | null) => {
       setSets((prev) =>
         prev.filter((_, i) => i !== index).map((s, i) => ({ ...s, setNumber: i + 1 }))
       )
