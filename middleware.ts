@@ -1,31 +1,44 @@
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-/**
- * ルート保護のMiddleware
- *
- * @supabase/ssr は Vercel Edge Runtime で動作しないため、
- * cookieの存在チェックのみを行う軽量な実装にしている。
- * 実際のセッション検証（auth.getUser()）は
- * app/(dashboard)/layout.tsx の Server Component で行う。
- */
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  let supabaseResponse = NextResponse.next({ request })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          supabaseResponse = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          )
+        },
+      },
+    }
+  )
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
 
   const protectedPaths = ['/dashboard', '/customers', '/sessions', '/exercises']
-  const isProtectedPath = protectedPaths.some((path) => pathname.startsWith(path))
+  const isProtectedPath = protectedPaths.some((path) =>
+    request.nextUrl.pathname.startsWith(path)
+  )
 
-  if (isProtectedPath) {
-    // Supabaseのセッションcookieの存在を確認する
-    const hasAuthCookie = request.cookies.getAll().some((c) => c.name.includes('auth-token'))
-
-    if (!hasAuthCookie) {
-      const url = request.nextUrl.clone()
-      url.pathname = '/login'
-      return NextResponse.redirect(url)
-    }
+  if (!user && isProtectedPath) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
   }
 
-  return NextResponse.next()
+  return supabaseResponse
 }
 
 export const config = {
