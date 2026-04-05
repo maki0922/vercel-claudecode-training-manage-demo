@@ -191,7 +191,8 @@
 
 ### ルート保護
 - `(dashboard)` グループ配下のルートはすべて認証必須
-- 未認証アクセス → `/login` へリダイレクト（Next.js middleware使用）
+- 未認証アクセス → `/login` へリダイレクト（`app/(dashboard)/layout.tsx` のサーバーサイド認証チェックで実装）
+- 備考: Vercel Edge Runtimeとの互換性問題により、Next.js Middlewareではなくレイアウトで認証ガードを行う
 
 ### ロール設計
 ```

@@ -22,14 +22,13 @@
 - `@supabase/supabase-js` `@supabase/ssr` インストール
 - `lib/supabase/client.ts` (Browser用)
 - `lib/supabase/server.ts` (Server Component用)
-- `lib/supabase/middleware.ts` (Middleware用)
-- 成果物: 3種類のSupabaseクライアント
+- 成果物: 2種類のSupabaseクライアント
 
-### T-04: Next.js Middleware設定
-- `middleware.ts` でセッション更新処理
-- 認証必須ルート（`/dashboard`, `/customers`, `/sessions`, `/exercises`）へのガード実装
+### T-04: ルート保護設定
+- `app/(dashboard)/layout.tsx` でサーバーサイド認証チェック
 - 未認証時 `/login` へリダイレクト
 - 成果物: ルート保護機能
+- 備考: Vercel Edge Runtimeとの互換性問題により、Next.js Middlewareは使用せずレイアウトで認証ガードを実装
 
 ---
 

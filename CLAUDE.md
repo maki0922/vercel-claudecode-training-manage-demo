@@ -20,8 +20,7 @@
 /
 ├── app/                    # Next.js App Router
 │   ├── (auth)/             # 認証不要ルート
-│   ├── (dashboard)/        # 認証必要ルート
-│   └── api/                # Route Handlers
+│   └── (dashboard)/        # 認証必要ルート（layout.tsxで認証ガード）
 ├── components/             # 再利用可能UIコンポーネント
 ├── lib/
 │   ├── supabase/           # Supabaseクライアント初期化
